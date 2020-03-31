@@ -36,34 +36,37 @@ typedef struct joueurs {
 }joueurs;
 
 carte card;
+carte *ptrcard = &card;
 /***************************************************Définitions***************************************************/
 
-carte* generatecard ();
-void generatemain (carte *tirage);
+void generatecard ();
+void generatemain ();
 
 /*************************************************Fonctions*****************************************************/
-carte* generatecard() {
+void generatecard() {
+    memset(ptrcard, '\0', sizeof(card));
     char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
     char figures[]={'H', 'D', 'C', 'S'};
     srand(time(NULL));
-
         int nbr1 = rand() % 13;
         int nbr2 = rand() % 4;
-        card.valeur = values[nbr1];
-        card.figure = figures[nbr2];
-        printf("%s%s", card.valeur, card.figure);
-    return &card;
+        ptrcard->valeur = values[nbr1];
+        ptrcard->figure = figures[nbr2];
+        printf("carte aleatoire : %c%c\n", ptrcard->valeur, ptrcard->figure); //test de bon fonctionnement
 }
-void generatemain(carte *tirage) {
+void generatemain() {
     mainjoueur tiragejoueur1;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
         generatecard();
-        tiragejoueur1.cartes[i] = *tirage;
+        tiragejoueur1.cartes[i] =*ptrcard;
+    }
+    for (int j = 0; j < 4; ++j) {                     //affiche la main du joueur 1
+        printf("%c", tiragejoueur1.cartes[j]);
     }
 }
 
 /***************************************************code********************************************************/
 int main() {
-generatecard();
+generatemain();
     return 0;
 }
