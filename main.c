@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 /***************************************************projet poker**************************************************
  * ***************************************************************************************************************
@@ -35,38 +36,47 @@ typedef struct joueurs {
     joueur joueur[2];
 }joueurs;
 
-carte card;
-carte *ptrcard = &card; //obligé de mettre en variable global car sinon le code n'éxecutait que deux boucles dans le generatemain.
+mainjoueur tirage;
+carte tabverif[10];
 /***************************************************Définitions***************************************************/
 
-void generatecard ();
-void generatemain ();
-
+carte  generatecard ();
+mainjoueur * generatemain ();
 /*************************************************Fonctions*****************************************************/
-void generatecard() {
+carte  generatecard() {
+    unsigned long seed = clock()+time(NULL)+getpid();
+    srand(seed);
+    sleep(1);  //timer qui permet de laisser le temps au rand de se réinit.
     char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
     char figures[]={'H', 'D', 'C', 'S'};
+    carte cartes;
         int nbr1 = rand() % 13;
         int nbr2 = rand() % 4;
-        ptrcard->valeur = values[nbr1];
-        ptrcard->figure = figures[nbr2];
-        printf("carte aleatoire : %c%c\n", ptrcard->valeur, ptrcard->figure); //test de bon fonctionnement
+        cartes.valeur = values[nbr1];
+        cartes.figure = figures[nbr2];
+        //printf("carte aleatoire : %c%c\n", cartes.valeur, cartes.figure); //test de bon fonctionnement
+    return cartes;
 }
-void generatemain() {
-    mainjoueur tiragejoueur1;
-    for (int i = 0; i < 4; ++i) { // i détermine le nombre de carte par joueur.
-        generatecard();
-        tiragejoueur1.card[i] =*ptrcard;
-    }
-    for (int j = 0; j < 4; ++j) {
-
-
-    printf("%c\n", tiragejoueur1.card[j]);
-}}
-
+mainjoueur * generatemain() {
+    for (int i = 0; i < 4; i++) { // i détermine le nombre de carte par joueur (ici 5).
+        carte card=generatecard(); // permet d'appeler la fonction et de récup le résultat. donc 'card' recoit 'cartes'.
+        for (int j = 0; j < 10; ++j) {
+            if (card.valeur == tabverif[j].valeur && card.figure == tabverif[j].figure)
+                generatemain();
+        }
+        tabverif[i].valeur=card.valeur;
+        tabverif[i].figure=card.figure;
+        tirage.card[i] = card;
+            //printf("%c %c", card.valeur, card.figure);
+        }
+    printf("\nla main du joueur 1 :\n");
+    for (int j = 0; j < 4; j++) {
+    printf("%c%c\n", tirage.card[j].valeur, tirage.card[j].figure);  // affichage de la main du joueur
+}
+return &tirage;}
 /***************************************************code********************************************************/
 int main() {
-    srand(time(NULL)); //obligé de le placer là sinon les variable nbr1 et nbr2 ne se réinit pas.
-generatemain();
+    //for (int i = 0; i < 5; ++i) {  //boucle test pour tester les doublons
+        generatemain();
     return 0;
 }
