@@ -43,6 +43,8 @@ mainjoueur tirage;
 carte  generatecard ();
 mainjoueur generatemain ();
 void affichermain(mainjoueur);
+bool is_same_figure(carte *, carte *);
+bool is_same_valeur(carte *, carte *);
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     unsigned long seed = clock()+time(NULL)+getpid();
@@ -72,6 +74,12 @@ mainjoueur generatemain() {
         tirage.card[i] = card;
         //printf("%c %c", card.valeur, card.figure);
     }
+    //if (is_same_figure) {                                                                                               //test de fonctionnement des bools
+    //    printf("Présence de carte de meme figure\n");
+    //}
+    //if (is_same_valeur) {
+    //    printf("Présence de carte de même valeur\n");
+    //}
     return tirage;}
 
 void affichermain(mainjoueur tirage) {
@@ -81,8 +89,20 @@ void affichermain(mainjoueur tirage) {
     }
 }
 
-/*******************************************fonction main et score**********************************************/
+/*******************************************les bools***********************************************************/
+bool is_same_figure(carte * carte1, carte * carte2) {
+    if (carte1->figure == carte2->figure)
+        return true;
+    else
+        return false;
+}
 
+bool is_same_valeur(carte * carte1, carte * carte2) {
+    if (carte1->valeur == carte2->valeur)
+        return true;
+    else
+        return false;
+}
 
 /***************************************************code********************************************************/
 int main() {
