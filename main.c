@@ -97,11 +97,8 @@ bool is_same_figure(carte * carte1, carte * carte2) {
         return false;
 }
 
-bool is_same_valeur(carte * carte1, carte * carte2) {
-    if (carte1->valeur == carte2->valeur)
-        return true;
-    else
-        return false;
+bool is_same_valeur(carte * carte1, carte * carte2) {                                                                   //manière plus simple et condensé d'écrire un bool il return par défaut TRUE
+    return carte1->valeur == carte2->valeur;
 }
 
 /***************************************************code********************************************************/
