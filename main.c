@@ -47,6 +47,7 @@ void affichermain(mainjoueur);
 bool is_same_figure(carte *, carte *);
 bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
+mainjoueur tri(mainjoueur);
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     unsigned long seed = clock()+time(NULL)+getpid();
@@ -57,7 +58,7 @@ carte  generatecard() {
     int nbr2 = rand() % 4;
     cartes.valeur = values[nbr1];
     cartes.figure = figures[nbr2];
-    printf("carte aleatoire : %c%c\n", cartes.valeur, cartes.figure);                                                 //test de bon fonctionnement
+    //printf("carte aleatoire : %c%c\n", cartes.valeur, cartes.figure);                                                 //test de bon fonctionnement
     return cartes;
 }
 mainjoueur generatemain() {
@@ -85,10 +86,9 @@ mainjoueur generatemain() {
 void affichermain(mainjoueur tirage) {
     printf("\nla main du joueur :\n");
     for (int j = 0; j < 5; j++) {
-        printf("%c%c\n", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
+        printf("%c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
 }
-
 /*******************************************les bools***********************************************************/
 bool is_same_figure(carte * carte1, carte * carte2) {
     if (carte1->figure == carte2->figure)
@@ -103,21 +103,33 @@ bool is_same_valeur(carte * carte1, carte * carte2) {                           
 
 /*************************************************fonction force et tri de la main******************************/
 int getrang(carte  cartes) {
-    int a;
-    for (int i = 0; i < 13; ++i) {
-        if (cartes.valeur==values[i])
-        a=i;
-    }
-    return a;
+    int forces;
+        for (int j = 0; j < 13; ++j) {
+            if (cartes.valeur == values[j]) {
+                forces = j;
+            }
+        }
+    return forces;
 }
-
+mainjoueur tri(mainjoueur tirage) {
+    carte temp1;
+    for (int i = 0; i < 5; ++i) {
+        for (int k = i+1; k < 5; ++k) {
+        if (getrang(tirage.card[i]) > getrang(tirage.card[k])) {
+            temp1 = tirage.card[k];
+            tirage.card[k] = tirage.card[i];
+            tirage.card[i] = temp1;
+        } else{
+            printf("coucou ");
+        }
+        }
+    }
+    return tirage;
+}
 /***************************************************code********************************************************/
 int main() {
-    //for (int i = 0; i < 5; ++i) {}                                                                                     //boucle test pour tester les doublons
-        //generatemain();
-        //affichermain(tirage);
-        generatecard();
-getrang(cartes);
-
+    //for (int i = 0; i < 5; ++i) {  }                                                                                   //générer plusieurs mains
+        generatemain();
+        affichermain(tri(tirage));
     return 0;
 }
