@@ -119,8 +119,6 @@ mainjoueur tri(mainjoueur tirage) {
             temp1 = tirage.card[k];
             tirage.card[k] = tirage.card[i];
             tirage.card[i] = temp1;
-        } else{
-            printf("coucou ");
         }
         }
     }
