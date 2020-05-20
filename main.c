@@ -37,7 +37,6 @@ typedef struct joueurs {
 }joueurs;
 
 mainjoueur tirage;
-carte cartes;
 char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
 score result;
 /***************************************************Définitions***************************************************/
@@ -53,6 +52,7 @@ score is_pair( mainjoueur );
 score is_four_of_kind(mainjoueur);
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
+    carte cartes;
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
     sleep(1);                                                                                                           //timer qui permet de laisser le temps au rand de se réinit.
@@ -65,25 +65,14 @@ carte  generatecard() {
     return cartes;
 }
 mainjoueur generatemain() {
-    carte tabverif[10];
-    int i;
-    for (i =0 ; i < 5; i++) {                                                                                           // i détermine le nombre de carte par joueur (ici 5).
-        carte card=generatecard();                                                                                      // permet d'appeler la fonction et de récup le résultat. donc 'card' recoit 'cartes'.
+    for (int i = 0; i < 5; ++i) {                                                                                       // i détermine le nombre de carte par joueur (ici 5).
+        tirage.card[i] = generatecard();                                                                                // permet d'appeler la fonction et de récup le résultat. donc 'tirage' recoit 'cartes'.
         for (int j = 0; j < 10; ++j) {
-            if (card.valeur == tabverif[j].valeur && card.figure == tabverif[j].figure)
+            if (is_same_figure(&tirage.card[i], &tirage.card[i + 1]) &&
+                is_same_valeur(&tirage.card[i], &tirage.card[i + 1]))
                 i--;
         }
-        tabverif[i].valeur=card.valeur;
-        tabverif[i].figure=card.figure;
-        tirage.card[i] = card;
-        //printf("%c %c", card.valeur, card.figure);
     }
-    //if (is_same_figure) {                                                                                               //test de fonctionnement des bools
-    //    printf("Présence de carte de meme figure\n");
-    //}
-    //if (is_same_valeur) {
-    //    printf("Présence de carte de même valeur\n");
-    //}
     return tirage;}
 
 void affichermain(mainjoueur tirage) {
@@ -131,7 +120,7 @@ mainjoueur tri(mainjoueur tirage) {
 /***************************************************Fonction des figures poker**********************************/
 score is_pair( mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
-            if (tirage.card[i].valeur == tirage.card[i+1].valeur) {
+            if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
                 strcpy(result.type, "PAIR");
                 result.score = 20;
             }
@@ -156,8 +145,9 @@ score is_four_of_kind(mainjoueur tirage) {
 
 /***************************************************déroulement du jeu*************************************************/
 int main() {
-    //for (int i = 0; i < 5; ++i) {  }                                                                                   //générer plusieurs mains
-        generatemain();
-        affichermain(tri(tirage));
+    for (int i = 0; i < 10; ++i) {                                                                                     //générer plusieurs mains
+    generatemain();
+    affichermain(tri(tirage));
+}
     return 0;
 }
