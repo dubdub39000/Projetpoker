@@ -39,6 +39,7 @@ typedef struct joueurs {
 mainjoueur tirage;
 carte cartes;
 char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
+score result;
 /***************************************************Définitions***************************************************/
 
 carte  generatecard ();
@@ -129,39 +130,31 @@ mainjoueur tri(mainjoueur tirage) {
 
 /***************************************************Fonction des figures poker**********************************/
 score is_pair( mainjoueur tirage) {
-    score pair;
     for (int i = 0; i < 4 ; ++i) {
-        for (int j = 0; j < 4 ; ++j) {
-            if (tirage.card[i].valeur == tirage.card[j+1].valeur) {
-                strcpy(pair.type, "PAIR");
-                pair.score = 20;
-                printf("%s avec un score de %i\n", pair.type,pair.score);
+            if (tirage.card[i].valeur == tirage.card[i+1].valeur) {
+                strcpy(result.type, "PAIR");
+                result.score = 20;
             }
             else
                 break;
-        }
+
     }
-    return pair;
+    return result;
 }
 
 score is_four_of_kind(mainjoueur tirage) {
-    score four_of_kind;
     for (int i = 0; i < 2 ; ++i) {
-        for (int j = 0; j < 4 ; ++j) {
-            if (tirage.card[i].valeur == tirage.card[j+1].valeur && tirage.card[i].valeur == tirage.card[j+2].valeur && tirage.card[i].valeur == tirage.card[j+3].valeur) {
-                strcpy(four_of_kind.type, "CARRE");
-                four_of_kind.score = 70;
-                printf("%s avec un score de %i\n", four_of_kind.type,four_of_kind.score);
+            if (tirage.card[i].valeur == tirage.card[i+1].valeur && tirage.card[i].valeur == tirage.card[i+2].valeur && tirage.card[i].valeur == tirage.card[i+3].valeur) {
+                strcpy(result.type, "CARRE");
+                result.score = 80;
             }
             else
                 break;
-        }
     }
-    return four_of_kind;
+    return result;
 }
 
-
-/***************************************************code********************************************************/
+/***************************************************déroulement du jeu*************************************************/
 int main() {
     //for (int i = 0; i < 5; ++i) {  }                                                                                   //générer plusieurs mains
         generatemain();
