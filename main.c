@@ -49,7 +49,7 @@ bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
 mainjoueur tri(mainjoueur);
 score is_pair( mainjoueur );
-score is_full_of_kind(mainjoueur);
+score is_four_of_kind(mainjoueur);
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     unsigned long seed = clock()+time(NULL)+getpid();
@@ -117,7 +117,7 @@ mainjoueur tri(mainjoueur tirage) {
     carte temp1;
     for (int i = 0; i < 5; ++i) {
         for (int k = i+1; k < 5; ++k) {
-        if (getrang(tirage.card[i]) > getrang(tirage.card[k])) {
+        if (getrang(tirage.card[i]) < getrang(tirage.card[k])) {
             temp1 = tirage.card[k];
             tirage.card[k] = tirage.card[i];
             tirage.card[i] = temp1;
@@ -144,20 +144,20 @@ score is_pair( mainjoueur tirage) {
     return pair;
 }
 
-score is_full_of_kind(mainjoueur tirage) {
-    score full_of_kind;
+score is_four_of_kind(mainjoueur tirage) {
+    score four_of_kind;
     for (int i = 0; i < 2 ; ++i) {
         for (int j = 0; j < 4 ; ++j) {
             if (tirage.card[i].valeur == tirage.card[j+1].valeur && tirage.card[i].valeur == tirage.card[j+2].valeur && tirage.card[i].valeur == tirage.card[j+3].valeur) {
-                strcpy(full_of_kind.type, "CARRE");
-                full_of_kind.score = 70;
-                printf("%s avec un score de %i\n", full_of_kind.type,full_of_kind.score);
+                strcpy(four_of_kind.type, "CARRE");
+                four_of_kind.score = 70;
+                printf("%s avec un score de %i\n", four_of_kind.type,four_of_kind.score);
             }
             else
                 break;
         }
     }
-    return full_of_kind;
+    return four_of_kind;
 }
 
 
