@@ -48,6 +48,8 @@ bool is_same_figure(carte *, carte *);
 bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
 mainjoueur tri(mainjoueur);
+score is_pair( mainjoueur );
+score is_full_of_kind;
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     unsigned long seed = clock()+time(NULL)+getpid();
@@ -124,6 +126,28 @@ mainjoueur tri(mainjoueur tirage) {
     }
     return tirage;
 }
+
+/***************************************************Fonction des figures poker**********************************/
+score is_pair( mainjoueur tirage) {
+    score pair;
+    for (int i = 0; i < 4 ; ++i) {
+        for (int j = 0; j < 4 ; ++j) {
+            if (tirage.card[i].valeur == tirage.card[j+1].valeur) {
+                strcpy(pair.type, "PAIR");
+                pair.score = 14;
+                printf("%s avec un score de %i\n", pair.type,pair.score);
+            }
+            else
+                break;
+        }
+    }
+    return pair;
+}
+
+
+
+
+
 /***************************************************code********************************************************/
 int main() {
     //for (int i = 0; i < 5; ++i) {  }                                                                                   //générer plusieurs mains
