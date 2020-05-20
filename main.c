@@ -49,7 +49,7 @@ bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
 mainjoueur tri(mainjoueur);
 score is_pair( mainjoueur );
-score is_full_of_kind;
+score is_full_of_kind(mainjoueur);
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     unsigned long seed = clock()+time(NULL)+getpid();
@@ -134,7 +134,7 @@ score is_pair( mainjoueur tirage) {
         for (int j = 0; j < 4 ; ++j) {
             if (tirage.card[i].valeur == tirage.card[j+1].valeur) {
                 strcpy(pair.type, "PAIR");
-                pair.score = 14;
+                pair.score = 20;
                 printf("%s avec un score de %i\n", pair.type,pair.score);
             }
             else
@@ -144,8 +144,21 @@ score is_pair( mainjoueur tirage) {
     return pair;
 }
 
-
-
+score is_full_of_kind(mainjoueur tirage) {
+    score full_of_kind;
+    for (int i = 0; i < 2 ; ++i) {
+        for (int j = 0; j < 4 ; ++j) {
+            if (tirage.card[i].valeur == tirage.card[j+1].valeur && tirage.card[i].valeur == tirage.card[j+2].valeur && tirage.card[i].valeur == tirage.card[j+3].valeur) {
+                strcpy(full_of_kind.type, "CARRE");
+                full_of_kind.score = 70;
+                printf("%s avec un score de %i\n", full_of_kind.type,full_of_kind.score);
+            }
+            else
+                break;
+        }
+    }
+    return full_of_kind;
+}
 
 
 /***************************************************code********************************************************/
