@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2019.3.5\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\projetpoker.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\projetpoker.dir/objects.a @CMakeFiles\projetpoker.dir\objects1.rsp
-C:\MinGW\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\projetpoker.dir/objects.a -Wl,--no-whole-archive  -o projetpoker.exe -Wl,--out-implib,libprojetpoker.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\projetpoker.dir\linklibs.rsp
+/usr/bin/cc -g   CMakeFiles/projetpoker.dir/main.c.o  -o projetpoker 

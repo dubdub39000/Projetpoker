@@ -47,15 +47,22 @@ void affichermain(mainjoueur);
 bool is_same_figure(carte *, carte *);
 bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
+bool doublons(carte *);
 mainjoueur tri(mainjoueur);
 score is_pair( mainjoueur );
+score is_three_of_kind(mainjoueur);
 score is_four_of_kind(mainjoueur);
+score is_double_pair(mainjoueur);
+score is_flush(mainjoueur);
+void jeu();
+void ordinateur();
+void humain();
+joueur bot;
+joueur vous;
+joueurs partie;
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     carte cartes;
-    unsigned long seed = clock()+time(NULL)+getpid();
-    srand(seed);
-    sleep(1);                                                                                                           //timer qui permet de laisser le temps au rand de se réinit.
     char figures[]={'H', 'D', 'C', 'S'};
     int nbr1 = rand() % 13;
     int nbr2 = rand() % 4;
@@ -65,18 +72,20 @@ carte  generatecard() {
     return cartes;
 }
 mainjoueur generatemain() {
-    for (int i = 0; i < 5; ++i) {                                                                                       // i détermine le nombre de carte par joueur (ici 5).
-        tirage.card[i] = generatecard();                                                                                // permet d'appeler la fonction et de récup le résultat. donc 'tirage' recoit 'cartes'.
-        for (int j = 0; j < 10; ++j) {
-            if (is_same_figure(&tirage.card[i], &tirage.card[i + 1]) &&
-                is_same_valeur(&tirage.card[i], &tirage.card[i + 1]))
+    for (int i = 0; i < 5;) {                                                                                       // i détermine le nombre de carte par joueur (ici 5).
+        tirage.card[i] = generatecard();
+            if (doublons(&tirage.card[i])) {
                 i--;
-        }
+            }
+            else {
+                i++;
+            }
     }
-    return tirage;}
+    return tirage;
+}
 
 void affichermain(mainjoueur tirage) {
-    printf("\nla main du joueur :\n");
+    printf("\nla main du joueur :%i\n", bot.numero );
     for (int j = 0; j < 5; j++) {
         printf("%c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
@@ -92,7 +101,18 @@ bool is_same_figure(carte * carte1, carte * carte2) {
 bool is_same_valeur(carte * carte1, carte * carte2) {                                                                   //manière plus simple et condensé d'écrire un bool il return par défaut TRUE
     return carte1->valeur == carte2->valeur;
 }
+bool doublons(carte *carte) {
+    int compt=0;
+        for (int k = 0; k < 5; ++k) {
+            if (is_same_figure(carte, &tirage.card[k]) &&
+                is_same_valeur(carte, &tirage.card[k]))
+                compt++;
+            if (compt==2)
+                return true;
 
+    }
+    return false;
+}
 /*************************************************fonction force et tri de la main******************************/
 int getrang(carte  cartes) {
     int forces;
@@ -130,6 +150,39 @@ score is_pair( mainjoueur tirage) {
     }
     return result;
 }
+score is_double_pair(mainjoueur tirage) {
+    for (int i = 0; i < 4 ; ++i) {
+        if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
+            strcpy(result.type, "DOUBLE PAIR");
+            result.score = 30;
+        }
+        else
+            break;  }
+    return result;
+}
+score is_three_of_kind(mainjoueur tirage) {
+    for (int i = 0; i < 2; ++i) {
+        if (tirage.card[i].valeur == tirage.card[i + 1].valeur && tirage.card[i].valeur == tirage.card[i + 2].valeur) {
+            strcpy(result.type, "BRELAN");
+            result.score = 40;
+        } else
+            break;
+        return result;
+    }
+}
+
+score is_flush(mainjoueur tirage) {
+    for (int i = 0; i < 2 ; ++i) {
+        if (tirage.card[i].figure == tirage.card[i+1].figure && tirage.card[i].figure == tirage.card[i+2].figure && tirage.card[i].figure == tirage.card[i+3].figure && tirage.card[i].figure == tirage.card[i+4].figure){
+            strcpy(result.type, "FLUSH");
+            result.score = 60;
+        }
+        else
+            break;
+    }
+    return result;
+}
+
 
 score is_four_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
@@ -142,12 +195,41 @@ score is_four_of_kind(mainjoueur tirage) {
     }
     return result;
 }
+/***************************************************Verification du résultat*******************************************/
+
+
 
 /***************************************************déroulement du jeu*************************************************/
-int main() {
-    for (int i = 0; i < 10; ++i) {                                                                                     //générer plusieurs mains
-    generatemain();
-    affichermain(tri(tirage));
+void jeu() {
+
+    ordinateur();
+
 }
+
+void ordinateur() {
+    bot.numero=1;
+    bot.main=generatemain();
+    affichermain(tri(tirage));
+    is_three_of_kind(tri(tirage));
+    bot.scorejoueur=result;
+}
+
+void humain() {
+    vous.numero=2;
+    vous.main=generatemain();
+    affichermain(tri(tirage));
+    vous.scorejoueur=result;
+}
+
+
+
+/*****************************************************main()***********************************************************/
+int main() {
+    unsigned long seed = clock()+time(NULL)+getpid();
+    srand(seed);
+    do {                                                                                    //générer plusieurs mains
+        jeu();
+    }
+    while (result.score!=40);
     return 0;
 }
