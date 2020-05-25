@@ -57,6 +57,7 @@ score is_flush(mainjoueur);
 void jeu();
 void ordinateur();
 void humain();
+score calculresultat(mainjoueur);
 joueur bot;
 joueur vous;
 joueurs partie;
@@ -89,6 +90,7 @@ void affichermain(mainjoueur tirage) {
     for (int j = 0; j < 5; j++) {
         printf("%c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
+    printf("\ngagne avec %s", result.type);
 }
 /*******************************************les bools***********************************************************/
 bool is_same_figure(carte * carte1, carte * carte2) {
@@ -141,7 +143,7 @@ mainjoueur tri(mainjoueur tirage) {
 score is_pair( mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
             if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
-                strcpy(result.type, "PAIR");
+                strcpy(result.type, "UNE PAIR");
                 result.score = 20;
             }
             else
@@ -153,7 +155,7 @@ score is_pair( mainjoueur tirage) {
 score is_double_pair(mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
         if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
-            strcpy(result.type, "DOUBLE PAIR");
+            strcpy(result.type, " UNE DOUBLE PAIR");
             result.score = 30;
         }
         else
@@ -174,7 +176,7 @@ score is_three_of_kind(mainjoueur tirage) {
 score is_flush(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
         if (tirage.card[i].figure == tirage.card[i+1].figure && tirage.card[i].figure == tirage.card[i+2].figure && tirage.card[i].figure == tirage.card[i+3].figure && tirage.card[i].figure == tirage.card[i+4].figure){
-            strcpy(result.type, "FLUSH");
+            strcpy(result.type, "UNE COULEUR");
             result.score = 60;
         }
         else
@@ -187,7 +189,7 @@ score is_flush(mainjoueur tirage) {
 score is_four_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
             if (tirage.card[i].valeur == tirage.card[i+1].valeur && tirage.card[i].valeur == tirage.card[i+2].valeur && tirage.card[i].valeur == tirage.card[i+3].valeur) {
-                strcpy(result.type, "CARRE");
+                strcpy(result.type, "UN CARRE");
                 result.score = 80;
             }
             else
@@ -196,7 +198,20 @@ score is_four_of_kind(mainjoueur tirage) {
     return result;
 }
 /***************************************************Verification du résultat*******************************************/
-
+score calculresultat(mainjoueur tirage) {
+    is_pair(tri(tirage));
+    int tempP=result.score;
+    if (result.score = 20)
+        affichermain(tri(tirage));
+    is_double_pair(tri(tirage));
+        if (result.score=30)
+            affichermain(tri(tirage));
+    is_three_of_kind(tri(tirage));
+    int tempB = result.score;
+    if (result.score=40 )
+        affichermain(tri(tirage));
+    return result;
+}
 
 
 /***************************************************déroulement du jeu*************************************************/
@@ -209,8 +224,7 @@ void jeu() {
 void ordinateur() {
     bot.numero=1;
     bot.main=generatemain();
-    affichermain(tri(tirage));
-    is_three_of_kind(tri(tirage));
+    calculresultat(tirage);
     bot.scorejoueur=result;
 }
 
@@ -227,9 +241,12 @@ void humain() {
 int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
-    do {                                                                                    //générer plusieurs mains
-        jeu();
+    for (int i = 0; i < 3; ++i) {
+        ordinateur();
     }
-    while (result.score!=40);
+    //do {                                                                                    //générer plusieurs mains
+    //    jeu();
+    //}
+    //while (result.score!=40);
     return 0;
 }
