@@ -208,6 +208,20 @@ score is_straight(mainjoueur tirage) {
     }
     return result;
 }
+
+score is_straight_flush(mainjoueur tirage) {
+    for (int i = 0; i < 4 ; ++i) {
+        if (getrang(tirage.card[i]) == 1+getrang(tirage.card[i+1]) && getrang(tirage.card[i+1]) == 1+getrang(tirage.card[i+2]) && getrang(tirage.card[i+2]) == 1+getrang(tirage.card[i+3]) && getrang(tirage.card[i+3]) == 1+getrang(tirage.card[i+4])
+            && (tirage.card[i].figure == tirage.card[i+1].figure && tirage.card[i].figure == tirage.card[i+2].figure && tirage.card[i].figure == tirage.card[i+3].figure && tirage.card[i].figure == tirage.card[i+4].figure)){
+
+                strcpy(result.type, "QUINTE FLUSH");
+            result.score = 90;
+        }
+        else
+            break;
+    }
+    return result;
+}
 /***************************************************Verification du résultat*******************************************/
 
 
@@ -223,7 +237,7 @@ void ordinateur() {
     bot.numero=1;
     bot.main=generatemain();
     affichermain(tri(tirage));
-    is_straight(tri(tirage));
+    is_straight_flush(tri(tirage));
     bot.scorejoueur=result;
 }
 
@@ -243,6 +257,6 @@ int main() {
     do {                                                                                    //générer plusieurs mains
         jeu();
     }
-    while (result.score!=50);
+    while (result.score!=90);
     return 0;
 }
