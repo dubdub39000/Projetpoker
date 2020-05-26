@@ -54,6 +54,7 @@ score is_three_of_kind(mainjoueur);
 score is_four_of_kind(mainjoueur);
 score is_double_pair(mainjoueur);
 score is_flush(mainjoueur);
+score is_straight(mainjoueur );
 void jeu();
 void ordinateur();
 void humain();
@@ -195,6 +196,18 @@ score is_four_of_kind(mainjoueur tirage) {
     }
     return result;
 }
+
+score is_straight(mainjoueur tirage) {
+    for (int i = 0; i < 4 ; ++i) {
+        if (getrang(tirage.card[i]) == 1+getrang(tirage.card[i+1]) && getrang(tirage.card[i+1]) == 1+getrang(tirage.card[i+2]) && getrang(tirage.card[i+2]) == 1+getrang(tirage.card[i+3]) && getrang(tirage.card[i+3]) == 1+getrang(tirage.card[i+4])){
+            strcpy(result.type, "SUITE");
+            result.score = 50;
+        }
+        else
+            break;
+    }
+    return result;
+}
 /***************************************************Verification du résultat*******************************************/
 
 
@@ -210,7 +223,7 @@ void ordinateur() {
     bot.numero=1;
     bot.main=generatemain();
     affichermain(tri(tirage));
-    is_three_of_kind(tri(tirage));
+    is_straight(tri(tirage));
     bot.scorejoueur=result;
 }
 
@@ -230,6 +243,6 @@ int main() {
     do {                                                                                    //générer plusieurs mains
         jeu();
     }
-    while (result.score!=40);
+    while (result.score!=50);
     return 0;
 }
