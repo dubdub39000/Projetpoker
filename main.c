@@ -36,11 +36,7 @@ typedef struct joueurs {
     joueur joueur[2];
 }joueurs;
 
-mainjoueur tirage;
-char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
-score result;
 /***************************************************Définitions***************************************************/
-
 carte  generatecard ();
 mainjoueur generatemain ();
 void affichermain(mainjoueur);
@@ -49,6 +45,7 @@ bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
 bool doublons(carte *);
 mainjoueur tri(mainjoueur);
+score is_high_card (mainjoueur);
 score is_pair( mainjoueur );
 score is_three_of_kind(mainjoueur);
 score is_four_of_kind(mainjoueur);
@@ -61,9 +58,16 @@ void jeu();
 joueur ordinateur();
 joueur humain();
 score calculresultat(mainjoueur);
-void afficheresultat (joueurs *);
+void afficheresultat (joueurs *, int);
+void comparemains(joueurs []);
+/******************************************************variable global*********************************************/
 joueur bot;
 joueur vous;
+int forces;
+mainjoueur tirage;
+char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
+score result;
+
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     carte cartes;
@@ -95,9 +99,15 @@ void affichermain(mainjoueur tirage) {
     }
 }
 
-void afficheresultat (joueurs *partie){
-    int temp = 0;
-    if(partie->joueur->)
+void afficheresultat (joueurs *partie, int choix){
+    switch (choix){
+        case 1:
+            printf("%s plus fort que %s, l'ordinateur gagne !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+        case 2:
+            printf("%s aussi fort que %s, égalité !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+        case 3:
+            printf("%s plus fort que %s, vous gagnez !\n", partie->joueur[1].scorejoueur.type, partie->joueur[0].scorejoueur.type );
+    }
 }
 /*******************************************les bools***********************************************************/
 bool is_same_figure(carte * carte1, carte * carte2) {
@@ -124,7 +134,6 @@ bool doublons(carte *carte) {
 }
 /*************************************************fonction force et tri de la main******************************/
 int getrang(carte  cartes) {
-    int forces;
         for (int j = 0; j < 13; ++j) {
             if (cartes.valeur == values[j]) {
                 forces = j;
@@ -147,6 +156,12 @@ mainjoueur tri(mainjoueur tirage) {
 }
 
 /***************************************************Fonction des figures poker**********************************/
+score is_high_card (mainjoueur tirage){
+        getrang(tirage.card[4]);
+    strcpy(result.type, "CARTE HAUTE");
+    result.score=forces;
+}
+
 score is_pair( mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
             if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
@@ -215,8 +230,6 @@ score is_full(mainjoueur tirage) {
     return result;
 }
 
-
-
 score is_four_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
             if (tirage.card[i].valeur == tirage.card[i+1].valeur && tirage.card[i].valeur == tirage.card[i+2].valeur && tirage.card[i].valeur == tirage.card[i+3].valeur) {
@@ -244,6 +257,7 @@ score is_straight_flush(mainjoueur tirage) {
 }
 /***************************************************Verification du résultat*******************************************/
 score calculresultat(mainjoueur tirage) {
+    is_high_card(tri(tirage));
     is_pair(tri(tirage));
     /*****************si presence pair*************/
     if (result.score = 20)
@@ -266,16 +280,30 @@ score calculresultat(mainjoueur tirage) {
     }
     return result;
 }
+/*******************************comparaison des score****************************************/
+void comparemains(joueurs partie[2]){
+    int choix;
+    if (partie->joueur[0].scorejoueur.score > partie->joueur[1].scorejoueur.score)
+        choix=1;
+    if (partie->joueur[0].scorejoueur.score = partie->joueur[1].scorejoueur.score)
+        choix=2;
+    if (partie->joueur[0].scorejoueur.score < partie->joueur[1].scorejoueur.score)
+        choix=3;
+    afficheresultat(partie, choix);
+}
 
 
 /***************************************************déroulement du jeu*************************************************/
 void jeu() {
-    joueurs partie;
-        partie.joueur[0]=ordinateur(bot);
-        partie.joueur[1]=humain(vous);
+    printf("bonjour");
+//joueurs partie[2];
+//partie->joueur[0]=ordinateur(bot);
+//partie->joueur[1]=humain(vous);
+//comparemains(partie);
 }
 
 joueur ordinateur() {
+    printf("bonjour");
     bot.numero=1;
     bot.main=generatemain();
     affichermain(tri(tirage));
@@ -297,10 +325,7 @@ joueur humain() {
 int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
-    jeu();
-    //do {                                                                                    //générer plusieurs mains
-    //    jeu();
-    //}
-    //while (result.score!=40);
+
+    //jeu();
     return 0;
 }
