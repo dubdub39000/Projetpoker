@@ -60,6 +60,7 @@ joueur humain();
 score calculresultat(mainjoueur);
 void afficheresultat (joueurs *, int);
 void comparemains(joueurs []);
+void matrice_CH();
 /******************************************************variable global*********************************************/
 joueur bot;
 joueur vous;
@@ -67,7 +68,7 @@ int forces;
 mainjoueur tirage;
 char values[]={'2', '3', '4', '5', '6','7', '8', '9', 't', 'v', 'q', 'k', 'a'};
 score result;
-
+char matrice[13][255];
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     carte cartes;
@@ -112,6 +113,26 @@ void afficheresultat (joueurs *partie, int choix){
             break;
     }
 }
+
+/*******************************************MATRICE CARTE HAUTE****************************/
+
+void matrice_CH() {
+
+    strcpy(matrice[0],"un deux");
+    strcpy(matrice[1],"un trois");
+    strcpy(matrice[2],"un quatre");
+    strcpy(matrice[3],"un cinq");
+    strcpy(matrice[4],"un six");
+    strcpy(matrice[5],"un sept");
+    strcpy(matrice[6],"un huit");
+    strcpy(matrice[7],"un neuf");
+    strcpy(matrice[8],"un dix");
+    strcpy(matrice[9],"un valet");
+    strcpy(matrice[10],"une dame");
+    strcpy(matrice[11],"un roi");
+    strcpy(matrice[12],"un as");
+}
+
 /*******************************************les bools***********************************************************/
 bool is_same_figure(carte * carte1, carte * carte2) {
     if (carte1->figure == carte2->figure)
@@ -161,7 +182,8 @@ mainjoueur tri(mainjoueur tirage) {
 /***************************************************Fonction des figures poker**********************************/
 score is_high_card (mainjoueur tirage){
     getrang(tirage.card[4]);
-    strcpy(result.type, "CARTE HAUTE");
+    matrice_CH();
+    strcpy(result.type, matrice[forces]);
     result.score=forces;
     return result;
 }
@@ -336,10 +358,13 @@ joueur humain() {
     return vous;
 }
 
+
+
 /*****************************************************main()***********************************************************/
 int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
     jeu();
+
     return 0;
 }
