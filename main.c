@@ -27,20 +27,16 @@ typedef struct score {
 
 typedef struct joueur {
     int numero;
-score scorejoueur;
-mainjoueur main;
-bool gagnant;
+    score scorejoueur;
+    mainjoueur main;
+    bool gagnant;
 }joueur;
 
 typedef struct joueurs {
     joueur joueur[2];
 }joueurs;
 
-mainjoueur tirage;
-char values[]={'a', 'k', 'q', 'j', 't','9', '8', '7', '6', '5', '4', '3', '2'};
-score result;
 /***************************************************Définitions***************************************************/
-
 carte  generatecard ();
 mainjoueur generatemain ();
 void affichermain(mainjoueur);
@@ -49,18 +45,29 @@ bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
 bool doublons(carte *);
 mainjoueur tri(mainjoueur);
+score is_high_card (mainjoueur);
 score is_pair( mainjoueur );
 score is_three_of_kind(mainjoueur);
 score is_four_of_kind(mainjoueur);
 score is_double_pair(mainjoueur);
 score is_flush(mainjoueur);
 score is_straight(mainjoueur );
+score is_full (mainjoueur);
+score is_straight_flush(mainjoueur);
 void jeu();
-void ordinateur();
-void humain();
+joueur ordinateur();
+joueur humain();
+score calculresultat(mainjoueur);
+void afficheresultat (joueurs *, int);
+void comparemains(joueurs []);
+/******************************************************variable global*********************************************/
 joueur bot;
 joueur vous;
-joueurs partie;
+int forces;
+mainjoueur tirage;
+char values[]={'2', '3', '4', '5', '6','7', '8', '9', 't', 'v', 'q', 'k', 'a'};
+score result;
+
 /*************************************************Fonctions générations main***************************************/
 carte  generatecard() {
     carte cartes;
@@ -75,20 +82,34 @@ carte  generatecard() {
 mainjoueur generatemain() {
     for (int i = 0; i < 5;) {                                                                                       // i détermine le nombre de carte par joueur (ici 5).
         tirage.card[i] = generatecard();
-            if (doublons(&tirage.card[i])) {
-                i--;
-            }
-            else {
-                i++;
-            }
+        if (doublons(&tirage.card[i])) {
+            i--;
+        }
+        else {
+            i++;
+        }
     }
     return tirage;
 }
-
+/****************************************************affichage**************************************************/
 void affichermain(mainjoueur tirage) {
-    printf("\nla main du joueur :%i\n", bot.numero );
+    printf("\nla main du joueur\n" );
     for (int j = 0; j < 5; j++) {
         printf("%c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
+    }
+}
+
+void afficheresultat (joueurs *partie, int choix){
+    switch (choix){
+        case 1:
+            printf("\n%s plus fort que %s, l'ordinateur gagne !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            break;
+        case 2:
+            printf("\n%s aussi fort que %s, égalité !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            break;
+        case 3:
+            printf("\n%s plus fort que %s, vous gagnez !\n", partie->joueur[1].scorejoueur.type, partie->joueur[0].scorejoueur.type );
+            break;
     }
 }
 /*******************************************les bools***********************************************************/
@@ -104,67 +125,74 @@ bool is_same_valeur(carte * carte1, carte * carte2) {                           
 }
 bool doublons(carte *carte) {
     int compt=0;
-        for (int k = 0; k < 5; ++k) {
-            if (is_same_figure(carte, &tirage.card[k]) &&
-                is_same_valeur(carte, &tirage.card[k]))
-                compt++;
-            if (compt==2)
-                return true;
+    for (int k = 0; k < 5; ++k) {
+        if (is_same_figure(carte, &tirage.card[k]) &&
+            is_same_valeur(carte, &tirage.card[k]))
+            compt++;
+        if (compt==2)
+            return true;
 
     }
     return false;
 }
 /*************************************************fonction force et tri de la main******************************/
 int getrang(carte  cartes) {
-    int forces;
-        for (int j = 0; j < 13; ++j) {
-            if (cartes.valeur == values[j]) {
-                forces = j;
-            }
+    for (int j = 0; j < 13; ++j) {
+        if (cartes.valeur == values[j]) {
+            forces = j;
         }
+    }
     return forces;
 }
 mainjoueur tri(mainjoueur tirage) {
     carte temp1;
     for (int i = 0; i < 5; ++i) {
         for (int k = i+1; k < 5; ++k) {
-        if (getrang(tirage.card[i]) < getrang(tirage.card[k])) {
-            temp1 = tirage.card[k];
-            tirage.card[k] = tirage.card[i];
-            tirage.card[i] = temp1;
-        }
+            if (getrang(tirage.card[i]) > getrang(tirage.card[k])) {
+                temp1 = tirage.card[k];
+                tirage.card[k] = tirage.card[i];
+                tirage.card[i] = temp1;
+            }
         }
     }
     return tirage;
 }
 
 /***************************************************Fonction des figures poker**********************************/
+score is_high_card (mainjoueur tirage){
+    getrang(tirage.card[4]);
+    strcpy(result.type, "CARTE HAUTE");
+    result.score=forces;
+    return result;
+}
+
 score is_pair( mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
-            if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
-                strcpy(result.type, "PAIR");
-                result.score = 20;
-            }
-            else
-                break;
-
+        if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1]) || is_same_valeur(&tirage.card[i+1], &tirage.card[i + 2]) || is_same_valeur(&tirage.card[i+2], &tirage.card[i + 3]) || is_same_valeur(&tirage.card[i+3], &tirage.card[i + 4])){
+            strcpy(result.type, "UNE PAIR");
+            result.score = 20;
+        }
+        else
+            break;
     }
     return result;
 }
+
 score is_double_pair(mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
-        if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1])) {
-            strcpy(result.type, "DOUBLE PAIR");
+        if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1]) && is_same_valeur(&tirage.card[i+3], &tirage.card[i + 4])) {
+            strcpy(result.type, " UNE DOUBLE PAIR");
             result.score = 30;
         }
         else
             break;  }
     return result;
 }
+
 score is_three_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2; ++i) {
         if (tirage.card[i].valeur == tirage.card[i + 1].valeur && tirage.card[i].valeur == tirage.card[i + 2].valeur) {
-            strcpy(result.type, "BRELAN");
+            strcpy(result.type, " UN BRELAN");
             result.score = 40;
         } else
             break;
@@ -172,10 +200,22 @@ score is_three_of_kind(mainjoueur tirage) {
     }
 }
 
+score is_straight(mainjoueur tirage) {
+    for (int i = 0; i < 4 ; ++i) {
+        if (getrang(tirage.card[i]) == 1+getrang(tirage.card[i+1]) && getrang(tirage.card[i+1]) == 1+getrang(tirage.card[i+2]) && getrang(tirage.card[i+2]) == 1+getrang(tirage.card[i+3]) && getrang(tirage.card[i+3]) == 1+getrang(tirage.card[i+4])){
+            strcpy(result.type, "UNE SUITE");
+            result.score = 50;
+        }
+        else
+            break;
+    }
+    return result;
+}
+
 score is_flush(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
         if (tirage.card[i].figure == tirage.card[i+1].figure && tirage.card[i].figure == tirage.card[i+2].figure && tirage.card[i].figure == tirage.card[i+3].figure && tirage.card[i].figure == tirage.card[i+4].figure){
-            strcpy(result.type, "FLUSH");
+            strcpy(result.type, "UNE COULEUR");
             result.score = 60;
         }
         else
@@ -184,24 +224,23 @@ score is_flush(mainjoueur tirage) {
     return result;
 }
 
-
-score is_four_of_kind(mainjoueur tirage) {
-    for (int i = 0; i < 2 ; ++i) {
-            if (tirage.card[i].valeur == tirage.card[i+1].valeur && tirage.card[i].valeur == tirage.card[i+2].valeur && tirage.card[i].valeur == tirage.card[i+3].valeur) {
-                strcpy(result.type, "CARRE");
-                result.score = 80;
-            }
-            else
-                break;
+score is_full(mainjoueur tirage) {
+    is_pair(tri(tirage));
+    if (result.score = 20){
+        is_three_of_kind(tri(tirage));
+        if (result.score=40) {
+            strcpy(result.type, "UN FULL");
+            result.score = 70;
+        }
     }
     return result;
 }
 
-score is_straight(mainjoueur tirage) {
-    for (int i = 0; i < 4 ; ++i) {
-        if (getrang(tirage.card[i]) == 1+getrang(tirage.card[i+1]) && getrang(tirage.card[i+1]) == 1+getrang(tirage.card[i+2]) && getrang(tirage.card[i+2]) == 1+getrang(tirage.card[i+3]) && getrang(tirage.card[i+3]) == 1+getrang(tirage.card[i+4])){
-            strcpy(result.type, "SUITE");
-            result.score = 50;
+score is_four_of_kind(mainjoueur tirage) {
+    for (int i = 0; i < 2 ; ++i) {
+        if (tirage.card[i].valeur == tirage.card[i+1].valeur && tirage.card[i].valeur == tirage.card[i+2].valeur && tirage.card[i].valeur == tirage.card[i+3].valeur) {
+            strcpy(result.type, "UN CARRE");
+            result.score = 80;
         }
         else
             break;
@@ -214,7 +253,7 @@ score is_straight_flush(mainjoueur tirage) {
         if (getrang(tirage.card[i]) == 1+getrang(tirage.card[i+1]) && getrang(tirage.card[i+1]) == 1+getrang(tirage.card[i+2]) && getrang(tirage.card[i+2]) == 1+getrang(tirage.card[i+3]) && getrang(tirage.card[i+3]) == 1+getrang(tirage.card[i+4])
             && (tirage.card[i].figure == tirage.card[i+1].figure && tirage.card[i].figure == tirage.card[i+2].figure && tirage.card[i].figure == tirage.card[i+3].figure && tirage.card[i].figure == tirage.card[i+4].figure)){
 
-                strcpy(result.type, "QUINTE FLUSH");
+            strcpy(result.type, "UNE QUINTE FLUSH");
             result.score = 90;
         }
         else
@@ -223,40 +262,84 @@ score is_straight_flush(mainjoueur tirage) {
     return result;
 }
 /***************************************************Verification du résultat*******************************************/
-
+score calculresultat(mainjoueur tirage) {
+    result = is_straight_flush(tri(tirage));
+    if (result.score==0) {
+        result = is_four_of_kind(tri(tirage));
+        //if (result.score == 0)
+        //is_full(tri(tirage));
+        if (result.score == 0) {
+            result = is_flush(tri(tirage));
+            if (result.score == 0) {
+                result = is_straight(tri(tirage));
+                if (result.score == 0) {
+                    result = is_three_of_kind(tri(tirage));
+                    if (result.score == 0) {
+                        result = is_double_pair(tri(tirage));
+                        if (result.score == 0) {
+                            result = is_pair(tri(tirage));
+                        if (result.score == 0) {
+                            result = is_high_card(tri(tirage));
+                        }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    printf("\nresult en sortie de calcul :%i\n", result.score);
+    return result;
+}
+/*******************************comparaison des score****************************************/
+void comparemains(joueurs partie[2]){
+    int choix=0;
+    if (partie->joueur[0].scorejoueur.score > partie->joueur[1].scorejoueur.score)
+        choix=1;
+    if (partie->joueur[0].scorejoueur.score == partie->joueur[1].scorejoueur.score)
+        choix=2;
+    if (partie->joueur[0].scorejoueur.score < partie->joueur[1].scorejoueur.score)
+        choix=3;
+    printf("\nvaleur de la variable choix :%i", choix);
+    afficheresultat(partie, choix);
+}
 
 
 /***************************************************déroulement du jeu*************************************************/
 void jeu() {
-
-    ordinateur();
-
+    joueurs partie[2];
+    partie->joueur[0]=ordinateur(bot);
+    partie->joueur[1]=humain(vous);
+    comparemains(partie);
 }
 
-void ordinateur() {
+joueur ordinateur() {
+    result.score=0;
+    strcpy(result.type, " ");
     bot.numero=1;
     bot.main=generatemain();
     affichermain(tri(tirage));
-    is_straight_flush(tri(tirage));
+    calculresultat(tri(tirage));
     bot.scorejoueur=result;
+    printf("\nscore du bot :%i %s\n", bot.scorejoueur.score, bot.scorejoueur.type);
+    return bot;
 }
 
-void humain() {
+joueur humain() {
+    result.score=0;
+    strcpy(result.type, " ");
     vous.numero=2;
     vous.main=generatemain();
     affichermain(tri(tirage));
+    calculresultat(tri(tirage));
     vous.scorejoueur=result;
+    printf("\nvotre score :%i %s\n", vous.scorejoueur.score, vous.scorejoueur.type);
+    return vous;
 }
-
-
 
 /*****************************************************main()***********************************************************/
 int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
-    do {                                                                                    //générer plusieurs mains
-        jeu();
-    }
-    while (result.score!=90);
+    jeu();
     return 0;
 }
