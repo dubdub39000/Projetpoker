@@ -98,20 +98,27 @@ void affichermain(mainjoueur tirage, joueur participant) {
         printf("\n== MAIN DU JOUEUR 2 ==\n");
     }
     for (int j = 0; j < 5; j++) {
-        printf("%c%c - ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
+        printf("- %c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
+    printf("\n");
 }
 
 void afficheresultat (joueurs *partie, int choix){
+    printf("\n===============================");
+    printf("\nRESULTAT: ");
+    printf("\n");
     switch (choix){
         case 1:
-            printf("\n%s plus fort que %s, joueur 1 gagne !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\n%s est supérieur à %s\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\nLE JOUEUR 1 REMPORTE CETTE PARTIE !!\n");
             break;
         case 2:
-            printf("\n%s aussi fort que %s, égalité !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\n%s est égal à %s\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\nDommage il y a égalité...\n");
             break;
         case 3:
-            printf("\n%s plus fort que %s, joueur 2 gagne !\n", partie->joueur[1].scorejoueur.type, partie->joueur[0].scorejoueur.type );
+            printf("\n%s est inférieur à %s\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\nLE JOUEUR 2 REMPORTE CETTE PARTIE !!\n");
             break;
     }
 }
@@ -305,8 +312,8 @@ score calculresultat(mainjoueur tirage) {
                                 result = is_double_pair(tri(tirage));
                                 if (result.score == 0) {
                                     result = is_pair(tri(tirage));
-                                if (result.score == 0) {
-                                    result = is_high_card(tri(tirage));
+                                    if (result.score == 0) {
+                                        result = is_high_card(tri(tirage));
                             }
                         }
                     }
