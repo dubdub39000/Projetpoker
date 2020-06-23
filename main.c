@@ -39,7 +39,7 @@ typedef struct joueurs {
 /***************************************************Définitions***************************************************/
 carte  generatecard ();
 mainjoueur generatemain ();
-void affichermain(mainjoueur);
+void affichermain(mainjoueur, joueur);
 bool is_same_figure(carte *, carte *);
 bool is_same_valeur(carte *, carte *);
 int  getrang(carte );
@@ -61,6 +61,7 @@ score calculresultat(mainjoueur);
 void afficheresultat (joueurs *, int);
 void comparemains(joueurs []);
 void matrice_CH();
+joueur deroulement(int );
 /******************************************************variable global*********************************************/
 joueur bot;
 joueur vous;
@@ -93,8 +94,13 @@ mainjoueur generatemain() {
     return tirage;
 }
 /****************************************************affichage**************************************************/
-void affichermain(mainjoueur tirage) {
-    printf("\n== MAIN DU JOUEUR ==\n" );
+void affichermain(mainjoueur tirage, joueur participant) {
+    if (participant.numero==0) {
+        printf("\n== MAIN DU JOUEUR 1 ==\n");
+    }
+    else {
+        printf("\n== MAIN DU JOUEUR 2 ==\n");
+    }
     for (int j = 0; j < 5; j++) {
         printf("%c%c - ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
@@ -103,13 +109,13 @@ void affichermain(mainjoueur tirage) {
 void afficheresultat (joueurs *partie, int choix){
     switch (choix){
         case 1:
-            printf("\n%s plus fort que %s, l'ordinateur gagne !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
+            printf("\n%s plus fort que %s, joueur 1 gagne !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
             break;
         case 2:
             printf("\n%s aussi fort que %s, égalité !\n", partie->joueur[0].scorejoueur.type, partie->joueur[1].scorejoueur.type );
             break;
         case 3:
-            printf("\n%s plus fort que %s, vous gagnez !\n", partie->joueur[1].scorejoueur.type, partie->joueur[0].scorejoueur.type );
+            printf("\n%s plus fort que %s, joueur 2 gagne !\n", partie->joueur[1].scorejoueur.type, partie->joueur[0].scorejoueur.type );
             break;
     }
 }
@@ -324,43 +330,34 @@ void comparemains(joueurs partie[2]){
         choix=2;
     if (partie->joueur[0].scorejoueur.score < partie->joueur[1].scorejoueur.score)
         choix=3;
-    //printf("\nvaleur de la variable choix :%i", choix);
+    //printf("\nvaleur de la variable choix :%i", choix);   TBF
     afficheresultat(partie, choix);
 }
 
 
 /***************************************************déroulement du jeu*************************************************/
 void jeu() {
+    int cptr=0;
     joueurs partie[2];
-    partie->joueur[0]=ordinateur(bot);
-    partie->joueur[1]=humain(vous);
+    for (int i = 0; i < 2; ++i) {                          //i est le nombre de participant
+        partie->joueur[i]=deroulement(cptr);
+        cptr++;
+    }
     comparemains(partie);
 }
 
-joueur ordinateur() {
+
+joueur deroulement(int cptr) {
+    joueur participant;
     result.score=0;
     strcpy(result.type, " ");
-    bot.numero=1;
-    bot.main=generatemain();
-    affichermain(tri(tirage));
-    calculresultat(tri(tirage));
-    bot.scorejoueur=result;
-    //printf("\nscore du bot :%i %s\n", bot.scorejoueur.score, bot.scorejoueur.type);
-    return bot;
+        participant.numero=cptr;
+        participant.main=generatemain();
+        affichermain(tri(tirage), participant);
+        calculresultat(tri(tirage));
+        participant.scorejoueur=result;
+    return participant;
 }
-
-joueur humain() {
-    result.score=0;
-    strcpy(result.type, " ");
-    vous.numero=2;
-    vous.main=generatemain();
-    affichermain(tri(tirage));
-    calculresultat(tri(tirage));
-    vous.scorejoueur=result;
-   // printf("\nvotre score :%i %s\n", vous.scorejoueur.score, vous.scorejoueur.type);
-    return vous;
-}
-
 
 
 /*****************************************************main()***********************************************************/
