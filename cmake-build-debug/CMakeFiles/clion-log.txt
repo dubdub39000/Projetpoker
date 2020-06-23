@@ -1,4 +1,4 @@
-/home/j.mailly/Documents/clion-2019.2.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/j.mailly/CLionProjects/Projetpoker
+/home/nolan.cordier/Bureau/clion-2019.2.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/nolan.cordier/CLionProjects/Projetpoker2
 -- The C compiler identification is GNU 5.4.0
 -- Check for working C compiler: /usr/bin/cc
 -- Check for working C compiler: /usr/bin/cc -- works
@@ -8,4 +8,4 @@
 -- Detecting C compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/j.mailly/CLionProjects/Projetpoker/cmake-build-debug
+-- Build files have been written to: /home/nolan.cordier/CLionProjects/Projetpoker2/cmake-build-debug

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/j.mailly/CLionProjects/Projetpoker/main.c
+/home/nolan.cordier/CLionProjects/Projetpoker2/main.c
 stdio.h
 -
 stdlib.h
