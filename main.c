@@ -55,16 +55,12 @@ score is_straight(mainjoueur );
 score is_full (mainjoueur);
 score is_straight_flush(mainjoueur);
 void jeu();
-joueur ordinateur();
-joueur humain();
 score calculresultat(mainjoueur);
 void afficheresultat (joueurs *, int);
 void comparemains(joueurs []);
 void matrice_CH();
 joueur deroulement(int );
 /******************************************************variable global*********************************************/
-joueur bot;
-joueur vous;
 int forces;
 mainjoueur tirage;
 char values[]={'2', '3', '4', '5', '6','7', '8', '9', 't', 'v', 'q', 'k', 'a'};
@@ -78,7 +74,7 @@ carte  generatecard() {
     int nbr2 = rand() % 4;
     cartes.valeur = values[nbr1];
     cartes.figure = figures[nbr2];
-    //printf("carte aleatoire : %c%c\n", cartes.valeur, cartes.figure);                                                 //test de bon fonctionnement
+    //printf("carte aleatoire : %c%c\n", cartes.valeur, cartes.figure);         TBF                                        //test de bon fonctionnement
     return cartes;
 }
 mainjoueur generatemain() {
@@ -298,7 +294,7 @@ score calculresultat(mainjoueur tirage) {
     if (result.score==0) {
         result = is_four_of_kind(tri(tirage));
         if (result.score == 0)
-            is_full(tri(tirage));
+            result = is_full(tri(tirage));
                 if (result.score == 0) {
                     result = is_flush(tri(tirage));
                     if (result.score == 0) {
@@ -318,10 +314,10 @@ score calculresultat(mainjoueur tirage) {
             }
         }
     }
-    //printf("\nresult en sortie de calcul :%i\n", result.score);
+    //printf("\nresult en sortie de calcul :%i\n", result.score);   TBF
     return result;
 }
-/*******************************comparaison des score****************************************/
+/*******************************comparaison des scores****************************************/
 void comparemains(joueurs partie[2]){
     int choix=0;
     if (partie->joueur[0].scorejoueur.score > partie->joueur[1].scorejoueur.score)
@@ -365,9 +361,5 @@ int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
     jeu();
-    /*do {
-        humain();
-    } while (result.score!=70);*/
-
     return 0;
 }
