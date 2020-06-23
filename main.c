@@ -123,6 +123,7 @@ void afficheresultat (joueurs *partie, int choix){
     }
 }
 
+
 /*******************************************MATRICE CARTE HAUTE****************************/
 
 void matrice_CH() {
@@ -141,7 +142,6 @@ void matrice_CH() {
     strcpy(matrice[11],"UN ROI");
     strcpy(matrice[12],"UN AS");
 }
-
 /*******************************************les bools***********************************************************/
 bool is_same_figure(carte * carte1, carte * carte2) {
     if (carte1->figure == carte2->figure)
@@ -361,8 +361,6 @@ joueur deroulement(int cptr) {
         participant.scorejoueur=result;
     return participant;
 }
-
-
 /*****************************************************main()***********************************************************/
 int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
