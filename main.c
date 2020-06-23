@@ -94,9 +94,9 @@ mainjoueur generatemain() {
 }
 /****************************************************affichage**************************************************/
 void affichermain(mainjoueur tirage) {
-    printf("\nla main du joueur\n" );
+    printf("\n== MAIN DU JOUEUR ==\n" );
     for (int j = 0; j < 5; j++) {
-        printf("%c%c ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
+        printf("%c%c - ", tirage.card[j].valeur, tirage.card[j].figure);                                                     // affichage de la main du joueur
     }
 }
 
@@ -118,19 +118,19 @@ void afficheresultat (joueurs *partie, int choix){
 
 void matrice_CH() {
 
-    strcpy(matrice[0],"un deux");
-    strcpy(matrice[1],"un trois");
-    strcpy(matrice[2],"un quatre");
-    strcpy(matrice[3],"un cinq");
-    strcpy(matrice[4],"un six");
-    strcpy(matrice[5],"un sept");
-    strcpy(matrice[6],"un huit");
-    strcpy(matrice[7],"un neuf");
-    strcpy(matrice[8],"un dix");
-    strcpy(matrice[9],"un valet");
-    strcpy(matrice[10],"une dame");
-    strcpy(matrice[11],"un roi");
-    strcpy(matrice[12],"un as");
+    strcpy(matrice[0],"UN DEUX");
+    strcpy(matrice[1],"UN TROIS");
+    strcpy(matrice[2],"UN QUATRE");
+    strcpy(matrice[3],"UN CINQ");
+    strcpy(matrice[4],"UN SIX");
+    strcpy(matrice[5],"UN SEPT");
+    strcpy(matrice[6],"UN HUIT");
+    strcpy(matrice[7],"UN NEUF");
+    strcpy(matrice[8],"UN DIX");
+    strcpy(matrice[9],"UN VALET");
+    strcpy(matrice[10],"UNE DAME");
+    strcpy(matrice[11],"UN ROI");
+    strcpy(matrice[12],"UN AS");
 }
 
 /*******************************************les bools***********************************************************/
@@ -203,7 +203,7 @@ score is_pair( mainjoueur tirage) {
 score is_double_pair(mainjoueur tirage) {
     for (int i = 0; i < 4 ; ++i) {
         if (is_same_valeur(&tirage.card[i], &tirage.card[i + 1]) && is_same_valeur(&tirage.card[i+3], &tirage.card[i + 4])) {
-            strcpy(result.type, " UNE DOUBLE PAIR");
+            strcpy(result.type, "UNE DOUBLE PAIR");
             result.score = 30;
         }
         else
@@ -214,7 +214,7 @@ score is_double_pair(mainjoueur tirage) {
 score is_three_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2; ++i) {
         if (tirage.card[i].valeur == tirage.card[i + 1].valeur && tirage.card[i].valeur == tirage.card[i + 2].valeur) {
-            strcpy(result.type, " UN BRELAN");
+            strcpy(result.type, "UN BRELAN");
             result.score = 40;
         } else
             break;
@@ -247,16 +247,19 @@ score is_flush(mainjoueur tirage) {
 }
 
 score is_full(mainjoueur tirage) {
-    is_pair(tri(tirage));
-    if (result.score = 20){
+    result.score = 0;
+    is_double_pair(tri(tirage));
+    if (result.score == 30){
         is_three_of_kind(tri(tirage));
-        if (result.score=40) {
+        if (result.score == 40) {
             strcpy(result.type, "UN FULL");
             result.score = 70;
         }
     }
     return result;
 }
+
+
 
 score is_four_of_kind(mainjoueur tirage) {
     for (int i = 0; i < 2 ; ++i) {
@@ -288,28 +291,28 @@ score calculresultat(mainjoueur tirage) {
     result = is_straight_flush(tri(tirage));
     if (result.score==0) {
         result = is_four_of_kind(tri(tirage));
-        //if (result.score == 0)
-        //is_full(tri(tirage));
-        if (result.score == 0) {
-            result = is_flush(tri(tirage));
-            if (result.score == 0) {
-                result = is_straight(tri(tirage));
+        if (result.score == 0)
+            is_full(tri(tirage));
                 if (result.score == 0) {
-                    result = is_three_of_kind(tri(tirage));
+                    result = is_flush(tri(tirage));
                     if (result.score == 0) {
-                        result = is_double_pair(tri(tirage));
+                        result = is_straight(tri(tirage));
                         if (result.score == 0) {
-                            result = is_pair(tri(tirage));
-                        if (result.score == 0) {
-                            result = is_high_card(tri(tirage));
-                        }
+                            result = is_three_of_kind(tri(tirage));
+                            if (result.score == 0) {
+                                result = is_double_pair(tri(tirage));
+                                if (result.score == 0) {
+                                    result = is_pair(tri(tirage));
+                                if (result.score == 0) {
+                                    result = is_high_card(tri(tirage));
+                            }
                         }
                     }
                 }
             }
         }
     }
-    printf("\nresult en sortie de calcul :%i\n", result.score);
+    //printf("\nresult en sortie de calcul :%i\n", result.score);
     return result;
 }
 /*******************************comparaison des score****************************************/
@@ -321,7 +324,7 @@ void comparemains(joueurs partie[2]){
         choix=2;
     if (partie->joueur[0].scorejoueur.score < partie->joueur[1].scorejoueur.score)
         choix=3;
-    printf("\nvaleur de la variable choix :%i", choix);
+    //printf("\nvaleur de la variable choix :%i", choix);
     afficheresultat(partie, choix);
 }
 
@@ -342,7 +345,7 @@ joueur ordinateur() {
     affichermain(tri(tirage));
     calculresultat(tri(tirage));
     bot.scorejoueur=result;
-    printf("\nscore du bot :%i %s\n", bot.scorejoueur.score, bot.scorejoueur.type);
+    //printf("\nscore du bot :%i %s\n", bot.scorejoueur.score, bot.scorejoueur.type);
     return bot;
 }
 
@@ -354,7 +357,7 @@ joueur humain() {
     affichermain(tri(tirage));
     calculresultat(tri(tirage));
     vous.scorejoueur=result;
-    printf("\nvotre score :%i %s\n", vous.scorejoueur.score, vous.scorejoueur.type);
+   // printf("\nvotre score :%i %s\n", vous.scorejoueur.score, vous.scorejoueur.type);
     return vous;
 }
 
@@ -365,6 +368,9 @@ int main() {
     unsigned long seed = clock()+time(NULL)+getpid();
     srand(seed);
     jeu();
+    /*do {
+        humain();
+    } while (result.score!=70);*/
 
     return 0;
 }
